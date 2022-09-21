@@ -1,0 +1,21 @@
+﻿@page "/"
+
+<EditForm Model="model">
+    <ErrorBoundary>
+        <InputText @bind-Value="model" @bind-Value:after="DoSomethingAfterValueChanged" />
+    </ErrorBoundary>
+    @*<input type="text" @bind-value="model" @bind-value:after="DoSomethingAfterValueChanged" />*@
+</EditForm>
+
+@code {
+    string model = String.Empty;
+
+    private Task DoSomethingAfterValueChanged()
+    {
+        Console.WriteLine("This executes.");
+        throw new InvalidOperationException("[1] This exception is lost in async-over-sync call from InputBase.CurrentValue_set.");
+        // exception not logged in Console
+        // exception not caught by ErrorBoundary
+        // exception not caught by Blazor global error UI (the yellow strip of death :-D)
+    }
+}
